@@ -1,29 +1,21 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import AutoHideFollowButton from './ScrollToBottom/AutoHideFollowButton';
 import Composer from './ScrollToBottom/Composer';
 import Panel from './ScrollToBottom/Panel';
-import useStyleToClassName from './hooks/internal/useStyleToClassName';
 
-const ROOT_STYLE = {
-  position: 'relative'
-};
-
-const BasicScrollToBottomCore = ({ children, className, followButtonClassName, scrollViewClassName }) => {
-  const rootCSS = useStyleToClassName()(ROOT_STYLE);
-
+function BasicScrollToBottomCore({ children, className = '', followButtonClassName = '', scrollViewClassName = '' }) {
   return (
-    <div className={classNames(rootCSS, (className || '') + '')}>
-      <Panel className={(scrollViewClassName || '') + ''}>{children}</Panel>
-      <AutoHideFollowButton className={(followButtonClassName || '') + ''} />
+    <div className={className} style={{ position: "relative" }}>
+      <Panel className={scrollViewClassName}>{children}</Panel>
+      <AutoHideFollowButton className={followButtonClassName} />
     </div>
   );
-};
+}
 
 BasicScrollToBottomCore.propTypes = {
-  children: PropTypes.any,
+  children: PropTypes.any.isRequired,
   className: PropTypes.string,
   followButtonClassName: PropTypes.string,
   scrollViewClassName: PropTypes.string
@@ -38,10 +30,8 @@ const BasicScrollToBottom = ({
   followButtonClassName,
   initialScrollBehavior = 'smooth',
   mode,
-  nonce,
   scroller,
-  scrollViewClassName,
-  styleOptions
+  scrollViewClassName
 }) => (
   <Composer
     checkInterval={checkInterval}
@@ -49,9 +39,7 @@ const BasicScrollToBottom = ({
     debug={debug}
     initialScrollBehavior={initialScrollBehavior}
     mode={mode}
-    nonce={nonce}
     scroller={scroller}
-    styleOptions={styleOptions}
   >
     <BasicScrollToBottomCore
       className={className}
@@ -72,10 +60,8 @@ BasicScrollToBottom.propTypes = {
   followButtonClassName: PropTypes.string,
   initialScrollBehavior: PropTypes.oneOf(['auto', 'smooth']),
   mode: PropTypes.oneOf(['bottom', 'top']),
-  nonce: PropTypes.string,
   scroller: PropTypes.func,
-  scrollViewClassName: PropTypes.string,
-  styleOptions: PropTypes.any
+  scrollViewClassName: PropTypes.string
 };
 
 export default BasicScrollToBottom;

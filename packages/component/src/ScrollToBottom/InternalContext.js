@@ -1,10 +1,9 @@
 import React from 'react';
 
 const context = React.createContext({
-  offsetHeight: 0,
-  scrollHeight: 0,
+  // eslint-disable-next-line no-unused-vars, no-empty-function
+  observeScrollPosition: fn => () => {},
   setTarget: () => 0,
-  styleToClassName: () => ''
 });
 
 context.displayName = 'ScrollToBottomInternalContext';

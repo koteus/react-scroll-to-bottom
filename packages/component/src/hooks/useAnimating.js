@@ -1,9 +1,10 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
-import useStateContext from './internal/useStateContext';
+import { useContext } from 'react';
+// import State2Context from '../ScrollToBottom/State2Context';
 
 export default function useAnimating() {
-  const { animating } = useStateContext(2);
+  const { animating } = useContext(2);
 
   return [animating];
 }

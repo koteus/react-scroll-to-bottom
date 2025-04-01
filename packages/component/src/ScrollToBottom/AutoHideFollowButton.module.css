@@ -1,0 +1,20 @@
+.button {
+  background-color: rgba(0, 0, 0, .2);
+  border-radius: 10px;
+  border-width: 0;
+  bottom: 5px;
+  cursor: pointer;
+  height: 20px;
+  outline: 0;
+  position: absolute;
+  right: 20px;
+  width: 20px;
+}
+
+.button:hover {
+  background-color: rgba(0, 0, 0, .4);
+}
+
+.button:active {
+  background-color: rgba(0, 0, 0, .6);
+}

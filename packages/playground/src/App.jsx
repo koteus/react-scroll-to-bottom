@@ -3,114 +3,18 @@
 import { LoremIpsum, loremIpsum } from 'lorem-ipsum';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ReactScrollToBottom, { StateContext } from 'react-scroll-to-bottom';
+import 'react-scroll-to-bottom/lib/style.css';
 
 import classNames from 'classnames';
-import createEmotion from '@emotion/css/create-instance';
 import Interval from 'react-interval';
 
 import CommandBar from './CommandBar';
 import StatusBar from './StatusBar';
-
-const FADE_IN_ANIMATION_KEYFRAMES = {
-  '0%': { opacity: 0.2 },
-  '100%': { opacity: 1 }
-};
-
-const ROOT_STYLE = {
-  '& > ul.button-bar': {
-    display: 'flex',
-    listStyleType: 'none',
-    margin: 0,
-    padding: 0,
-
-    '& > li:not(:last-child)': {
-      marginRight: 10
-    }
-  },
-
-  '& > .panes': {
-    display: 'flex',
-
-    '& > *': {
-      flex: 1
-    },
-
-    '& > *:not(:last-child)': {
-      marginRight: 10
-    }
-  },
-
-  '& > .version': {
-    bottom: 10,
-    position: 'absolute'
-  }
-};
-
-const CONTAINER_STYLE = {
-  borderColor: 'Black',
-  borderStyle: 'solid',
-  borderWidth: 1,
-  height: 400,
-  marginTop: 10
-};
-
-const LARGE_CONTAINER_STYLE = {
-  height: 600
-};
-
-const SCROLL_VIEW_STYLE = {
-  backgroundColor: '#EEE'
-};
-
-const SCROLL_VIEW_PADDING_STYLE = {
-  paddingLeft: 10,
-  paddingRight: 10,
-
-  '&:not(.sticky)': {
-    backgroundColor: 'rgba(255, 0, 0, .1)'
-  }
-};
-
-const SMALL_CONTAINER_STYLE = {
-  height: 300
-};
-
-const STATUS_BAR_CSS = {
-  bottom: 0,
-  position: 'sticky'
-};
+import styles from './App.module.css';
 
 const createParagraphs = count => new Array(count).fill().map(() => loremIpsum({ units: 'paragraph' }));
 
-const App = ({ nonce }) => {
-  const {
-    containerCSS,
-    largeContainerCSS,
-    rootCSS,
-    scrollViewCSS,
-    scrollViewPaddingCSS,
-    smallContainerCSS,
-    statusBarCSS
-  } = useMemo(() => {
-    const { css, keyframes } = createEmotion({ key: 'playground--css-', nonce });
-
-    return {
-      containerCSS: css(CONTAINER_STYLE),
-      largeContainerCSS: css(LARGE_CONTAINER_STYLE),
-      rootCSS: css(ROOT_STYLE),
-      scrollViewCSS: css(SCROLL_VIEW_STYLE),
-      scrollViewPaddingCSS: css({
-        ...SCROLL_VIEW_PADDING_STYLE,
-
-        '& > p': {
-          animation: `${keyframes(FADE_IN_ANIMATION_KEYFRAMES)} 500ms`
-        }
-      }),
-      smallContainerCSS: css(SMALL_CONTAINER_STYLE),
-      statusBarCSS: css(STATUS_BAR_CSS)
-    };
-  }, [nonce]);
-
+const App = () => {
   const [containerSize, setContainerSize] = useState('');
   const [intervalEnabled, setIntervalEnabled] = useState(false);
   const [paragraphs, setParagraphs] = useState(createParagraphs(10));
@@ -177,10 +81,10 @@ const App = ({ nonce }) => {
   const containerClassName = useMemo(
     () =>
       classNames(
-        containerCSS + '',
-        containerSize === 'small' ? smallContainerCSS + '' : containerSize === 'large' ? largeContainerCSS + '' : ''
+        styles.container,
+        containerSize === 'small' ? styles.smallContainer : containerSize === 'large' ? styles.largeContainer : ''
       ),
-    [containerCSS, containerSize, largeContainerCSS, smallContainerCSS]
+    [containerSize]
   );
 
   const handleKeyDown = useCallback(
@@ -226,8 +130,8 @@ const App = ({ nonce }) => {
   const scroller = useCallback(() => 100, []);
 
   return (
-    <div className={rootCSS + ''}>
-      <ul className="button-bar">
+    <div className={styles.app}>
+      <ul className={styles.buttonBar}>
         <li>
           <button onClick={handleAdd1}>Add new paragraph</button>
         </li>
@@ -281,7 +185,8 @@ const App = ({ nonce }) => {
           </label>
         </li>
       </ul>
-      <div className="panes">
+
+      <div className={styles.panes}>
         <div>
           {disableScrollToBottomPanel ? (
             <div className={containerClassName} />
@@ -289,14 +194,13 @@ const App = ({ nonce }) => {
             <ReactScrollToBottom
               className={containerClassName}
               initialScrollBehavior="auto"
-              nonce="a1b2c3d"
               scroller={limitAutoScrollHeight ? scroller : undefined}
-              scrollViewClassName={scrollViewCSS + ''}
+              scrollViewClassName={styles.scrollView}
             >
-              {commandBarVisible && <CommandBar nonce={nonce} />}
+              {commandBarVisible && <CommandBar />}
               <StateContext.Consumer>
                 {({ sticky }) => (
-                  <div className={classNames(scrollViewPaddingCSS + '', { sticky })}>
+                  <div className={classNames(styles.scrollViewPadding, { sticky })}>
                     {paragraphs.map(paragraph => (
                       <p key={paragraph}>
                         {paragraph.startsWith('Button: ') ? (
@@ -309,8 +213,8 @@ const App = ({ nonce }) => {
                   </div>
                 )}
               </StateContext.Consumer>
-              {commandBarVisible && <CommandBar nonce={nonce} />}
-              {commandBarVisible && <StatusBar className={statusBarCSS} nonce={nonce} />}
+              {commandBarVisible && <CommandBar />}
+              {commandBarVisible && <StatusBar className={styles.statusBar} />}
             </ReactScrollToBottom>
           )}
           <label>
@@ -330,13 +234,12 @@ const App = ({ nonce }) => {
               className={containerClassName}
               initialScrollBehavior="auto"
               mode="top"
-              nonce="a1b2c3d"
               scroller={limitAutoScrollHeight ? scroller : undefined}
             >
-              {commandBarVisible && <CommandBar nonce={nonce} />}
+              {commandBarVisible && <CommandBar />}
               <StateContext.Consumer>
                 {({ sticky }) => (
-                  <div className={classNames(scrollViewPaddingCSS + '', { sticky })}>
+                  <div className={classNames(styles.scrollViewPadding, { sticky })}>
                     {[...paragraphs].reverse().map(paragraph => (
                       <p key={paragraph}>
                         {paragraph.startsWith('Button: ') ? (
@@ -349,8 +252,8 @@ const App = ({ nonce }) => {
                   </div>
                 )}
               </StateContext.Consumer>
-              {commandBarVisible && <CommandBar nonce={nonce} />}
-              {commandBarVisible && <StatusBar className={statusBarCSS} nonce={nonce} />}
+              {commandBarVisible && <CommandBar />}
+              {commandBarVisible && <StatusBar className={styles.statusBar} />}
             </ReactScrollToBottom>
           )}
           <label>
@@ -359,7 +262,7 @@ const App = ({ nonce }) => {
           </label>
         </div>
       </div>
-      <div className="version">
+      <div className={styles.version}>
         <code>react-scroll-to-bottom@{loadedVersion}</code> has loaded.
       </div>
       {intervalEnabled && <Interval callback={handleAdd1} enabled={true} timeout={1000} />}

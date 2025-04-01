@@ -23,9 +23,6 @@
     "math-random": "2.0.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.15.7",
-    "@babel/core": "^7.15.8",
-    "@babel/preset-env": "^7.15.8",
     "concurrently": "^6.3.0",
     "esbuild": "^0.13.6",
     "global-agent": "^2.2.0",
@@ -44,12 +41,10 @@
   "scripts": {
     "browser": "node ./src/host/dev/index http://localhost:5000/",
     "browser:watch": "node-dev --no-notify --respawn ./src/host/dev/index http://localhost:5000/",
-    "build": "npm run build:babel && npm run build:esbuild",
-    "build:babel": "babel --config-file ./babel.config.json --out-dir lib src",
+    "build": "npm run build:esbuild",
     "build:esbuild": "esbuild lib/browser/index.js --bundle --define:process.env.CI=undefined --outfile=dist/test-harness.js --sourcemap --target=chrome80",
-    "prestart": "concurrently \"npm run build:babel:*\" && npm run build:esbuild",
+    "prestart": "build:esbuild",
     "start": "concurrently --kill-others \"npm run start:*\"",
-    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:esbuild": "npm run build:esbuild -- --watch",
     "test": "jest"
   }

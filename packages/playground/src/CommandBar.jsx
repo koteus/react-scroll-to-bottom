@@ -1,8 +1,6 @@
 /* eslint no-magic-numbers: "off" */
 
-import classNames from 'classnames';
-import createEmotion from '@emotion/css/create-instance';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import {
   useScrollTo,
@@ -12,32 +10,9 @@ import {
   useScrollToTop
 } from 'react-scroll-to-bottom';
 
-const ROOT_STYLE = {
-  '&.command-bar': {
-    backgroundColor: '#FFF',
-    boxShadow: '0 0 10px rgba(0, 0, 0, .2)',
+import styles from './CommandBar.module.css';
 
-    '& .command-bar__actions': {
-      display: 'flex',
-      listStyleType: 'none',
-      margin: 0,
-      padding: 10
-    },
-
-    '& .command-bar__action': {
-      fontSize: 11,
-      height: 40,
-
-      '&:not(:first-child)': {
-        marginLeft: 4
-      }
-    }
-  }
-};
-
-const CommandBar = ({ nonce }) => {
-  const rootCSS = useMemo(() => createEmotion({ key: 'playground--css-', nonce }).css(ROOT_STYLE), [nonce]);
-
+const CommandBar = () => {
   const scrollTo = useScrollTo();
   const scrollToBottom = useScrollToBottom();
   const scrollToEnd = useScrollToEnd();
@@ -58,30 +33,30 @@ const CommandBar = ({ nonce }) => {
   );
 
   return (
-    <div className={classNames(rootCSS + '', 'command-bar')}>
-      <ul className="command-bar__actions">
+    <div className={styles.commandBar}>
+      <ul className={styles.actions}>
         <li>
-          <button className="command-bar__action" onClick={handleScrollToBottomClick}>
+          <button className={styles.action} onClick={handleScrollToBottomClick}>
             Scroll to bottom
           </button>
         </li>
         <li>
-          <button className="command-bar__action" onClick={handleScrollToTopClick}>
+          <button className={styles.action} onClick={handleScrollToTopClick}>
             Scroll to top
           </button>
         </li>
         <li>
-          <button className="command-bar__action" onClick={handleScrollToStartClick}>
+          <button className={styles.action} onClick={handleScrollToStartClick}>
             Scroll to start
           </button>
         </li>
         <li>
-          <button className="command-bar__action" onClick={handleScrollToEndClick}>
+          <button className={styles.action} onClick={handleScrollToEndClick}>
             Scroll to end
           </button>
         </li>
         <li>
-          <button className="command-bar__action" onClick={handleScrollTo100pxClick}>
+          <button className={styles.action} onClick={handleScrollTo100pxClick}>
             100px
           </button>
         </li>

@@ -1,0 +1,75 @@
+/* Animation keyframes */
+@keyframes fadeIn {
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.app > ul.buttonBar {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.app > ul.buttonBar > li:not(:last-child) {
+  margin-right: 10px;
+}
+
+.app > .panes {
+  display: flex;
+}
+
+.app > .panes > * {
+  flex: 1;
+}
+
+.app > .panes > *:not(:last-child) {
+  margin-right: 10px;
+}
+
+.app > .version {
+  bottom: 10px;
+  position: absolute;
+}
+
+.container {
+  border-color: Black;
+  border-style: solid;
+  border-width: 1px;
+  height: 400px;
+  margin-top: 10px;
+}
+
+.largeContainer {
+  height: 600px;
+}
+
+.smallContainer {
+  height: 300px;
+}
+
+.scrollView {
+  background-color: #EEE;
+}
+
+.scrollViewPadding {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.scrollViewPadding:not(.sticky) {
+  background-color: rgba(255, 0, 0, .1);
+}
+
+.scrollViewPadding > p {
+  animation: fadeIn 500ms;
+}
+
+.statusBar {
+  bottom: 0;
+  position: sticky;
+}

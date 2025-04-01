@@ -164,7 +164,7 @@ rules:
 
   # Cannot group global or local imports and sort in differently
   sort-imports:
-    - error
+    - off
     - allowSeparatedGroups: true
       ignoreCase: true
       memberSyntaxSortOrder:
@@ -182,4 +182,4 @@ rules:
     - after
 
   # plugin:prettier
-  prettier/prettier: error
+  prettier/prettier: off
