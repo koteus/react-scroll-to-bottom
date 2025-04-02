@@ -1,5 +1,5 @@
 {
-  "name": "react-scroll-to-bottom",
+  "name": "@koteus/react-scroll-to-bottom",
   "version": "0.0.0-0",
   "description": "React container that will auto scroll to bottom",
   "keywords": [
@@ -16,20 +16,28 @@
     "stick to top",
     "tail"
   ],
-  "main": "lib/index.js",
-  "module": "lib/esm/index.js",
+  "main": "build/index.js",
+  "module": "build/esm/index.js",
+  "types": "build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/esm/index.js",
+      "require": "./build/index.js"
+    },
+    "./style.css": "./build/style.css"
+  },
   "files": [
-    "lib/**/*"
+    "build/**/*"
   ],
   "scripts": {
-    "build": "vite build && BROWSER_BUILD=true vite build && bun run build:test-harness",
+    "build": "vite build",
+    "build:watch": "vite build --watch",
+    "build:full": "vite build && bun run build:test-harness",
     "build:test-harness": "cp ../test-harness/dist/* dist/ || true",
-    "build:dev": "vite build --watch",
+    "start:test-harness": "nodemon --exec \"bun run build:test-harness\" --watch ../test-harness/dist",
     "eslint": "eslint src/**/*.js --ignore-pattern *.spec.js --ignore-pattern *.test.js",
-    "precommit": "eslint",
-    "start": "concurrently \"bun run start:*\"",
-    "start:vite": "vite build --watch",
-    "start:test-harness": "nodemon --exec \"bun run build:test-harness\" --watch ../test-harness/dist"
+    "precommit": "eslint"
   },
   "author": "William Wong <compulim@hotmail.com> (http://compulim.info/)",
   "license": "MIT",

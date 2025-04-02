@@ -10,7 +10,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-interval": "^2.1.2",
-    "react-scroll-to-bottom": "workspace:*"
+    "@koteus/react-scroll-to-bottom": "workspace:*"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.0",
@@ -25,9 +25,7 @@
     "dev": "vite",
     "start": "vite",
     "build": "vite build",
-    "test": "vitest",
-    "preview": "vite preview",
-    "serve": "npx nodemon --exec \"npx serve -p 5000\" --watch dist --watch serve.json"
+    "test": "vitest"
   },
   "eslintConfig": {
     "extends": [

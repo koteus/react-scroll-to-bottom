@@ -11,7 +11,7 @@ import {
   useMode,
   useObserveScrollPosition,
   useSticky
-} from 'react-scroll-to-bottom';
+} from '@koteus/react-scroll-to-bottom';
 
 import styles from './StatusBar.module.css';
 

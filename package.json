@@ -1,12 +1,11 @@
 {
   "name": "root",
-  "version": "5.0.0-0",
+  "version": "5.0.0-beta",
   "description": "React container that will auto scroll to bottom",
   "private": true,
   "workspaces": ["packages/*"],
   "scripts": {
     "browser": "node packages/test-harness/src/host/dev/index.js http://localhost:5000/__tests__/",
-    "build:packages": "bun run --workspace=packages/component --workspace=packages/test-harness --workspace=packages/playground build",
     "docker": "concurrently \"bun run docker:up\" \"bun run docker:watch\"",
     "docker:down": "docker-compose down --rmi all",
     "docker:up": "docker-compose down && docker-compose build --parallel && docker-compose up --scale chromium=2",

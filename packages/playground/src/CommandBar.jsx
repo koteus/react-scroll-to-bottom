@@ -8,7 +8,7 @@ import {
   useScrollToEnd,
   useScrollToStart,
   useScrollToTop
-} from 'react-scroll-to-bottom';
+} from '@koteus/react-scroll-to-bottom';
 
 import styles from './CommandBar.module.css';
 

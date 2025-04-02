@@ -44,13 +44,17 @@ jobs:
           VERSION=$(cat package.json | jq -r .version)
           echo "Using version: $VERSION"
           # Update all workspace package versions to match root package.json
-          bun x workspaces-update-version $VERSION --force-publish --no-git-tag-version --no-push --yes
+          for pkg in packages/*/package.json; do
+            jq --arg version "$VERSION" '.version = $version' "$pkg" > tmp.$$.json && mv tmp.$$.json "$pkg"
+          done
 
       - name: Building for production
         env:
           NODE_ENV: production
           SKIP_PREFLIGHT_CHECK: 'true'
-        run: bun run build --if-present
+        run: |
+          bun run --cwd=packages/component build
+          bun run --cwd=packages/playground build
 
       - name: Copying documents
         run: |
@@ -58,10 +62,10 @@ jobs:
           cp LICENSE packages/component
           cp README.md packages/component
 
-      - name: Running bun pack
+      - name: Running npm pack
         run: |
           cd packages/component
-          bun pack
+          npm pack
 
       - name: Uploading npm-tarball
         uses: actions/upload-artifact@v4
@@ -73,7 +77,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gh-pages
-          path: 'packages/playground/build/**/*'
+          path: 'packages/playground/build'
+          retention-days: 1
 
   # "test" job will only run when not deploying, will build for instrumentation.
   test:
@@ -105,7 +110,9 @@ jobs:
           VERSION=$(cat package.json | jq -r .version)
           echo "Using version: $VERSION"
           # Update all workspace package versions to match root package.json
-          bun x workspaces-update-version $VERSION --force-publish --no-git-tag-version --no-push --yes
+          for pkg in packages/*/package.json; do
+            jq --arg version "$VERSION" '.version = $version' "$pkg" > tmp.$$.json && mv tmp.$$.json "$pkg"
+          done
 
       - name: Running static code analysis
         run: |
@@ -116,7 +123,7 @@ jobs:
         env:
           NODE_ENV: test
           SKIP_PREFLIGHT_CHECK: 'true'
-        run: bun run build --if-present
+        run: bun run --cwd=packages/component build:full
 
       - name: Starting Docker Compose
         run: bun run docker:up -- --detach
@@ -163,13 +170,13 @@ jobs:
 
       - name: Publishing ${{ steps.read-package-json.outputs.name }}@${{ steps.read-package-json.outputs.version }}
         run: |
-          bun config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
-          bun publish *.tgz --tag main
+          npm config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
+          npm publish *.tgz --tag main --access public
 
       - name: Tagging dist-tag ${{ steps.read-package-json.outputs.name }}@${{ steps.read-package-json.outputs.version }} latest
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: |
-          bun dist-tag add ${{ steps.read-package-json.outputs.name }}@${{ steps.read-package-json.outputs.version }} latest
+          npm dist-tag add ${{ steps.read-package-json.outputs.name }}@${{ steps.read-package-json.outputs.version }} latest
 
       - name: Drafting a new release
         uses: actions/create-release@v1

@@ -27,7 +27,7 @@ Try out the demo at [https://compulim.github.io/react-scroll-to-bottom/](https:/
 
 ```jsx
 import { css } from 'emotion';
-import ScrollToBottom from 'react-scroll-to-bottom';
+import ScrollToBottom from '@koteus/react-scroll-to-bottom';
 
 const ROOT_CSS = css({
   height: 600,
@@ -184,7 +184,7 @@ The following sample code will put a button inside the content view only if the 
 > Note: `useScrollToBottom` can only be called inside components hosted under `<ScrollToBottom>`.
 
 ```jsx
-import ScrollToBottom, { useScrollToBottom, useSticky } from 'react-scroll-to-bottom';
+import ScrollToBottom, { useScrollToBottom, useSticky } from '@koteus/react-scroll-to-bottom';
 
 const Content = () => {
   const scrollToBottom = useScrollToBottom();
@@ -331,7 +331,7 @@ This context contains state of the container.
 The following sample code will put a button inside the content view only if the view is not at the bottom. When the button is clicked, it will scroll the view to the bottom.
 
 ```jsx
-import ScrollToBottom from 'react-scroll-to-bottom';
+import ScrollToBottom from '@koteus/react-scroll-to-bottom';
 
 const Content = ({ scrollToBottom, sticky }) => {
   return (

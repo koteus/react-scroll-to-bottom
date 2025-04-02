@@ -2,8 +2,8 @@
 
 import { LoremIpsum, loremIpsum } from 'lorem-ipsum';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import ReactScrollToBottom, { StateContext } from 'react-scroll-to-bottom';
-import 'react-scroll-to-bottom/lib/style.css';
+import ReactScrollToBottom, { StateContext } from '@koteus/react-scroll-to-bottom';
+import '@koteus/react-scroll-to-bottom/style.css';
 
 import classNames from 'classnames';
 import Interval from 'react-interval';
