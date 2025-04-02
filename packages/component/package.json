@@ -28,12 +28,13 @@
     "./style.css": "./build/style.css"
   },
   "files": [
-    "build/**/*"
+    "build/**/*",
+    "index.d.ts"
   ],
   "scripts": {
-    "build": "vite build",
-    "build:watch": "vite build --watch",
-    "build:full": "vite build && bun run build:test-harness",
+    "build": "vite build && cp index.d.ts build/",
+    "build:watch": "vite build --watch && cp index.d.ts build/",
+    "build:full": "vite build && cp index.d.ts build/ && bun run build:test-harness",
     "build:test-harness": "cp ../test-harness/dist/* dist/ || true",
     "start:test-harness": "nodemon --exec \"bun run build:test-harness\" --watch ../test-harness/dist",
     "eslint": "eslint src/**/*.js --ignore-pattern *.spec.js --ignore-pattern *.test.js",
