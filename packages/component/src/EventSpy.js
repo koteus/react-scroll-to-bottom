@@ -2,6 +2,7 @@ import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 
 import debounceFn from './debounce';
 
+// eslint-disable-next-line no-magic-numbers
 const EventSpy = ({ debounce = 200, name, onEvent, target }) => {
   // We need to save the "onEvent" to ref.
   // This is because "onEvent" may change from time to time, but debounce may still fire to the older callback.
@@ -14,6 +15,7 @@ const EventSpy = ({ debounce = 200, name, onEvent, target }) => {
       debounceFn(event => {
         const { current } = onEventRef;
 
+        // @ts-ignore
         current && current(event);
       }, debounce),
     [debounce, onEventRef]

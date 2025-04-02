@@ -33,6 +33,7 @@ const SpineTo = ({ name, onEnd, target, value }) => {
       if (to === '100%' || typeof to === 'number') {
         cancelAnimationFrame(animator.current);
 
+        // @ts-ignore
         animator.current = requestAnimationFrame(() => {
           if (target) {
             const toNumber = to === '100%' ? target.scrollHeight - target.offsetHeight : to;

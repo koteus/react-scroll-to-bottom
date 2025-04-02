@@ -1,0 +1,38 @@
+.statusBar {
+  background-color: rgba(255, 255, 255, .5);
+  box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+}
+
+.badges {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 10px;
+}
+
+.badge {
+  align-items: center;
+  background-color: #DDD;
+  border-radius: 5px;
+  display: flex;
+  flex: 1;
+  font-family: Arial;
+  font-size: 50%;
+  justify-content: center;
+  padding: 2px 4px;
+  text-align: center;
+}
+
+.badge:not(:first-child) {
+  margin-left: 4px;
+}
+
+.badgeLit {
+  background-color: Red;
+  color: White;
+}
+
+.badgeLitGreen {
+  background-color: Green;
+  color: White;
+}

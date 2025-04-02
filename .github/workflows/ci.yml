@@ -1,5 +1,5 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+# This workflow will do a clean install of bun dependencies, build the source code and run tests across different versions of bun
+# For more information see: https://github.com/oven-sh/setup-bun
 
 name: Continuous integration and deployment
 
@@ -21,36 +21,36 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        bun-version: [latest]
 
     steps:
       - name: Checking out for ${{ github.ref }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Using Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Using Bun ${{ matrix.bun-version }}
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          bun-version: ${{ matrix.bun-version }}
 
-      - name: Running npx version-from-git --no-git-tag-version
+      - name: Running version-from-git --no-git-tag-version
         if: ${{ startsWith(github.ref, 'refs/heads/') }}
-        run: npx version-from-git --no-git-tag-version
+        run: bun x version-from-git --no-git-tag-version
 
       - name: Installing dependencies
-        run: npm ci
+        run: bun install
 
-      - name: Bootstrapping packages
-        run: npm run bootstrap
-
-      - name: Propagating versions
+      - name: Setting package version
         run: |
-          node_modules/.bin/lerna version --force-publish --no-git-tag-version --no-push --yes `cat package.json | jq -r .version`
+          VERSION=$(cat package.json | jq -r .version)
+          echo "Using version: $VERSION"
+          # Update all workspace package versions to match root package.json
+          bun x workspaces-update-version $VERSION --force-publish --no-git-tag-version --no-push --yes
 
       - name: Building for production
         env:
           NODE_ENV: production
           SKIP_PREFLIGHT_CHECK: 'true'
-        run: npm run build --if-present
+        run: bun run build --if-present
 
       - name: Copying documents
         run: |
@@ -58,19 +58,19 @@ jobs:
           cp LICENSE packages/component
           cp README.md packages/component
 
-      - name: Running npm pack
+      - name: Running bun pack
         run: |
           cd packages/component
-          npm pack
+          bun pack
 
       - name: Uploading npm-tarball
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: npm-tarball
           path: 'packages/component/*.tgz'
 
       - name: Uploading gh-pages
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: gh-pages
           path: 'packages/playground/build/**/*'
@@ -82,50 +82,51 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
+        bun-version: [latest, canary]
 
     steps:
       - name: Checking out for ${{ github.ref }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Using Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Using Bun ${{ matrix.bun-version }}
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          bun-version: ${{ matrix.bun-version }}
 
-      - name: Running npx version-from-git --no-git-tag-version
+      - name: Running version-from-git --no-git-tag-version
         if: ${{ startsWith(github.ref, 'refs/heads/') }}
-        run: npx version-from-git --no-git-tag-version
+        run: bun x version-from-git --no-git-tag-version
 
       - name: Installing dependencies
-        run: npm ci
+        run: bun install
 
-      - name: Bootstrapping packages
-        run: npm run bootstrap
-
-      - name: Propagating versions
-        run: node_modules/.bin/lerna version --force-publish --no-git-tag-version --no-push --yes `cat package.json | jq -r .version`
+      - name: Setting package version
+        run: |
+          VERSION=$(cat package.json | jq -r .version)
+          echo "Using version: $VERSION"
+          # Update all workspace package versions to match root package.json
+          bun x workspaces-update-version $VERSION --force-publish --no-git-tag-version --no-push --yes
 
       - name: Running static code analysis
         run: |
           cd packages/component
-          npm run precommit src/
+          bun run precommit src/
 
       - name: Building for instrumentation
         env:
           NODE_ENV: test
           SKIP_PREFLIGHT_CHECK: 'true'
-        run: npm run build --if-present
+        run: bun run build --if-present
 
       - name: Starting Docker Compose
-        run: npm run docker:up -- --detach
+        run: bun run docker:up -- --detach
 
       - name: Testing
-        run: npm test -- --coverage
+        run: bun test -- --coverage
 
       - if: always()
         name: Stopping Docker Compose
-        run: npm run docker:down
+        run: bun run docker:down
 
   # "public" job will only run when merging a commit or tag.
   # It does not depends on "test" because we assume it already passed pull request status checks and "test" can be unreliable at times.
@@ -137,12 +138,12 @@ jobs:
 
     steps:
       - name: Downloading npm-tarball
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: npm-tarball
 
       - name: Downloading gh-pages
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: gh-pages
           path: gh-pages/
@@ -150,20 +151,25 @@ jobs:
       - name: Reading package.json
         id: read-package-json
         run: |
-          echo "::set-output name=name::$(tar xOf *.tgz package/package.json | jq -r '.name')"
-          echo "::set-output name=version::$(tar xOf *.tgz package/package.json | jq -r '.version')"
-          echo "::set-output name=tarball::$(ls *.tgz)"
-          echo "::set-output name=date::$(date +%Y-%m-%d)"
+          echo "name=$(tar xOf *.tgz package/package.json | jq -r '.name')" >> $GITHUB_OUTPUT
+          echo "version=$(tar xOf *.tgz package/package.json | jq -r '.version')" >> $GITHUB_OUTPUT
+          echo "tarball=$(ls *.tgz)" >> $GITHUB_OUTPUT
+          echo "date=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+
+      - name: Using Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
 
       - name: Publishing ${{ steps.read-package-json.outputs.name }}@${{ steps.read-package-json.outputs.version }}
         run: |
-          npm config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
-          npm publish *.tgz --tag main
+          bun config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
+          bun publish *.tgz --tag main
 
       - name: Tagging dist-tag ${{ steps.read-package-json.outputs.name }}@${{ steps.read-package-json.outputs.version }} latest
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: |
-          npm dist-tag add ${{ steps.read-package-json.outputs.name }}@${{ steps.read-package-json.outputs.version }} latest
+          bun dist-tag add ${{ steps.read-package-json.outputs.name }}@${{ steps.read-package-json.outputs.version }} latest
 
       - name: Drafting a new release
         uses: actions/create-release@v1

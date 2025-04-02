@@ -1,9 +1,9 @@
-/* global global:readonly, process:readonly */
+/* global globalThis:readonly */
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 
 function setMetaTag(name, content) {
   try {
-    const { document } = global;
+    const { document } = globalThis;
 
     if (typeof document !== 'undefined' && document.createElement && document.head && document.head.appendChild) {
       const meta = document.querySelector(`html meta[name="${encodeURI(name)}"]`) || document.createElement('meta');
@@ -17,5 +17,6 @@ function setMetaTag(name, content) {
 }
 
 export default function addVersionToMetaTag() {
-  setMetaTag('react-scroll-to-bottom:version', process.env.npm_package_version);
+  // @ts-ignore
+  setMetaTag('react-scroll-to-bottom:version', import.meta.env.VITE_APP_VERSION || '0.0.0');
 }

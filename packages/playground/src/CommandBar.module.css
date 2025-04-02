@@ -1,0 +1,20 @@
+.commandBar {
+  background-color: #FFF;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+}
+
+.commandBar .actions {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 10px;
+}
+
+.commandBar .action {
+  font-size: 11px;
+  height: 40px;
+}
+
+.commandBar .action:not(:first-child) {
+  margin-left: 4px;
+}

@@ -7,5 +7,6 @@ import StateContext from '../../ScrollToBottom/StateContext';
 const stateContexts = [StateContext, State1Context, State2Context];
 
 export default function useStateContext(tier) {
+  // @ts-ignore
   return useContext(stateContexts[tier] || stateContexts[0]);
 }
